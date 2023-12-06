@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "528717084824",
+    "project_id": "signinflutter-44532",
+    "storage_bucket": "signinflutter-44532.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528717084824:android:28e951b9c3a11d494538ed",
+        "android_client_info": {
+          "package_name": "com.example.se_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuvx1cHhPnAkenr6qXy9GRhG5oYVI5zvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

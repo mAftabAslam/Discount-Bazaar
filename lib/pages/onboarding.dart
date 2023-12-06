@@ -7,12 +7,12 @@ class Onboarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:const Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: Container(
         padding: const EdgeInsets.fromLTRB(0, 42, 0, 0),
         width: double.infinity,
         decoration: BoxDecoration(
-          color:const Color(0xFFFFFFFF),
+          color: const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
@@ -24,11 +24,14 @@ class Onboarding extends StatelessWidget {
               height: 414,
               child: Stack(
                 children: [
-                  const Positioned(
-                    left: 347,
-                    top: 0,
-                    child: Align(
-                      child: SizedBox(
+                  Positioned(
+                    left: 317,
+                    top: -10,
+                    child: TextButton(
+                      onPressed: () {
+                        // Add your onPressed logic here
+                      },
+                      child: const SizedBox(
                         width: 30,
                         height: 24,
                         child: Text(
@@ -94,7 +97,7 @@ class Onboarding extends StatelessWidget {
                       ),
                     ),
                   ),
-                 const Positioned(
+                  const Positioned(
                     left: 126,
                     top: 329,
                     child: Align(
@@ -119,7 +122,7 @@ class Onboarding extends StatelessWidget {
               ),
             ),
             Container(
-              margin:const EdgeInsets.fromLTRB(0, 0, 7, 12),
+              margin: const EdgeInsets.fromLTRB(0, 0, 7, 12),
               child: const Text(
                 'Welcome To Discount Bazaar!',
                 style: TextStyle(
@@ -132,11 +135,11 @@ class Onboarding extends StatelessWidget {
               ),
             ),
             Container(
-              margin:const EdgeInsets.fromLTRB(0, 0, 25, 0),
-              constraints:const BoxConstraints(
+              margin: const EdgeInsets.fromLTRB(0, 0, 25, 0),
+              constraints: const BoxConstraints(
                 maxWidth: 332,
               ),
-              child:const Text(
+              child: const Text(
                 'Buy and Sell whatever unnecessary grocery\nitem you have in your houses.',
                 style: TextStyle(
                   fontFamily: 'Inter',
@@ -153,20 +156,20 @@ class Onboarding extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 47),
-                    padding: const EdgeInsets.fromLTRB(90.74, 10, 90.5, 10),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff1cf396),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x0c101828),
-                          offset: Offset(0, 1),
-                          blurRadius: 1,
-                        ),
-                      ],
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add your onPressed logic here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.fromLTRB(90.74, 10, 90.5, 10),
+                      primary: const Color(0xff1cf396),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(
+                            color: Color(
+                                0x0c101828)), // Replace with your shadow color
+                      ),
+                      elevation: 1, // Adjust elevation as needed
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -198,7 +201,7 @@ class Onboarding extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.fromLTRB(93, 0, 88, 0),
+                    margin: const EdgeInsets.fromLTRB(93, 25, 88, 0),
                     width: double.infinity,
                     height: 41,
                     child: const Stack(
