@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.fromLTRB(0, 2, 9, 0),
-                      child: Text(
+                      child: const Text(
                         'DISCOUNT',
                         style: TextStyle(
                           fontFamily: 'Cabinet Grotesk',
@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.fromLTRB(0, 2, 82, 0),
-                      child: Text(
+                      child: const Text(
                         'BAZAAR',
                         style: TextStyle(
                           fontFamily: 'Cabinet Grotesk',
@@ -76,9 +76,9 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(17, 10, 263, 10),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xfff5f6fa),
+                  color: const Color(0xfff5f6fa),
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Color(0x0c101828),
                       offset: Offset(0, 1),
@@ -99,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                         height: 18,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Search',
                       style: TextStyle(
                         fontFamily: 'Inter',
@@ -113,13 +113,13 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(1, 0, 2, 24),
-                padding: EdgeInsets.fromLTRB(168, 68, 167, 68),
+                margin: const EdgeInsets.fromLTRB(1, 0, 2, 24),
+                padding: const EdgeInsets.fromLTRB(168, 68, 167, 68),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xfff5f6fa),
+                  color: const Color(0xfff5f6fa),
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Color(0x0f101828),
                       offset: Offset(0, 2),
@@ -145,14 +145,14 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 1, 12),
+                margin: const EdgeInsets.fromLTRB(0, 0, 1, 12),
                 width: double.infinity,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 236, 0),
-                      child: Text(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 236, 0),
+                      child: const Text(
                         'Categories',
                         style: TextStyle(
                           fontFamily: 'Inter',
@@ -163,8 +163,8 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
-                      'Sell all',
+                    const Text(
+                      'See all',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 12,
@@ -177,7 +177,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(1, 0, 1, 29),
+                margin: const EdgeInsets.fromLTRB(1, 0, 1, 29),
                 width: double.infinity,
                 height: 38,
                 child: Row(
@@ -187,10 +187,10 @@ class HomeScreen extends StatelessWidget {
                       width: 84,
                       height: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xffe0fff2),
+                        color: const Color(0xffe0fff2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Jars',
                           style: TextStyle(
@@ -203,15 +203,15 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Container(
                       width: 84,
                       height: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xffe0fff1),
+                        color: const Color(0xffe0fff1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Fruits',
                           style: TextStyle(
@@ -224,15 +224,15 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Container(
                       width: 84,
                       height: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xffe0fff2),
+                        color: const Color(0xffe0fff2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Dairy',
                           style: TextStyle(
@@ -245,15 +245,15 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Container(
                       width: 84,
                       height: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(0xffe0fff2),
+                        color: const Color(0xffe0fff2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Flour',
                           style: TextStyle(
@@ -269,14 +269,14 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 253, 0),
-                      child: Text(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 253, 0),
+                      child: const Text(
                         'Trending',
                         style: TextStyle(
                           fontFamily: 'Inter',
@@ -287,8 +287,8 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
-                      'Sell all',
+                    const Text(
+                      'See all',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 12,
@@ -302,7 +302,7 @@ class HomeScreen extends StatelessWidget {
               ),
 
 // Cards
-              HorizontalCardList(),
+              const HorizontalCardList(),
 // ... (more containers and widgets)
             ],
           ),

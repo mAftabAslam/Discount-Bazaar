@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class HorizontalCardList extends StatelessWidget {
+  const HorizontalCardList({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 220, // Adjust the height according to your design
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 3, // Replace with the number of cards you have
         itemBuilder: (context, index) {
           return Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
                 horizontal: 8.0), // Adjust horizontal spacing between cards
             child: buildCard(), // Create a function to build your card widget
           );
@@ -30,12 +32,12 @@ class HorizontalCardList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(4, 5, 4, 10),
+            padding: const EdgeInsets.fromLTRB(4, 5, 4, 10),
             width: 177,
             decoration: BoxDecoration(
-              color: Color(0xffffffff),
+              color: const Color(0xffffffff),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Color(0x0f101828),
                   offset: Offset(0, 2),
@@ -52,11 +54,11 @@ class HorizontalCardList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.fromLTRB(1, 0, 1, 2),
-                  padding: EdgeInsets.fromLTRB(90, 12, 11.03, 37),
+                  margin: const EdgeInsets.fromLTRB(1, 0, 1, 2),
+                  padding: const EdgeInsets.fromLTRB(90, 12, 11.03, 37),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color(0xfff5f6fa),
+                    color: const Color(0xfff5f6fa),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
@@ -73,7 +75,7 @@ class HorizontalCardList extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 47.97, 0),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 47.97, 0),
                         width: 18,
                         height: 18,
                         child: Image.network(
@@ -86,15 +88,15 @@ class HorizontalCardList extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(1, 0, 1, 6),
+                  margin: const EdgeInsets.fromLTRB(1, 0, 1, 6),
                   width: double.infinity,
                   height: 24,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 36, 0),
-                        child: Text(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 36, 0),
+                        child: const Text(
                           '10 Kilo Atta',
                           style: TextStyle(
                             fontSize: 16,
@@ -104,14 +106,14 @@ class HorizontalCardList extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.fromLTRB(0, 5, 0, 3),
+                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 3),
                         width: 42,
                         height: double.infinity,
                         decoration: BoxDecoration(
-                          color: Color(0xffe0fff2),
+                          color: const Color(0xffe0fff2),
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Rs 1000',
                             style: TextStyle(
@@ -126,9 +128,9 @@ class HorizontalCardList extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(1, 0, 0, 9),
-                  constraints: BoxConstraints(maxWidth: 168),
-                  child: Text(
+                  margin: const EdgeInsets.fromLTRB(1, 0, 0, 9),
+                  constraints: const BoxConstraints(maxWidth: 168),
+                  child: const Text(
                     'Tapal Danedar up for grabs! 4x Family Packs available to spice up your chai game. Don\'t miss out!',
                     style: TextStyle(
                       fontSize: 8,
@@ -138,14 +140,14 @@ class HorizontalCardList extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 1, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 0, 1, 0),
                   width: 168,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: Color(0xff1cf396),
+                    color: const Color(0xff1cf396),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'More Details',
                       style: TextStyle(

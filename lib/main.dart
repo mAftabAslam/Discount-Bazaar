@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:se_project/pages/home.dart';
+import 'package:se_project/pages/onboarding.dart';
 //import 'package:se_project/pages/onboarding.dart';
 import 'package:se_project/pages/splash.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // Set status bar color to transparent
+  ));
   runApp(const MyApp());
 }
 
@@ -14,10 +18,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
       routes: {
         '/onboarding': (context) =>
-            const HomeScreen(), // Your Onboarding screen
+            const Onboarding(), // Your Onboarding screen
       },
     );
   }
