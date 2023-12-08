@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:se_project/Pages/home.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({Key? key});
+
+  Future<void> signInWithGoogle() async {
+    // instance of the firebase auth and google signin button
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    //Trigger authentication flow
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    // obtain auth details
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser!.authentication;
+    // create new credentionals
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    // Sign in the user
+    final UserCredential userCredential =
+        await auth.signInWithCredential(credential);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +180,15 @@ class Onboarding extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // Add your onPressed logic here
+                    onPressed: () async {
+                      // onPressed logic here
+                      await signInWithGoogle();
+
+                      // ignore: use_build_context_synchronously
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const HomeScreen()));
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(90.74, 10, 90.5, 10),
