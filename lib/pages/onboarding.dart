@@ -6,7 +6,8 @@ import 'package:se_project/Pages/home.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({Key? key});
-
+  
+// Google Sign In With Firebase
   Future<void> signInWithGoogle() async {
     // instance of the firebase auth and google signin button
     FirebaseAuth auth = FirebaseAuth.instance;
