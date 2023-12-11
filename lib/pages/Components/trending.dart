@@ -9,7 +9,7 @@ class HorizontalCardList extends StatelessWidget {
       height: 220, // Adjust the height according to your design
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 3, // Replace with the number of cards you have
+        itemCount: 8, // Replace with the number of cards you have
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(
@@ -55,40 +55,26 @@ class HorizontalCardList extends StatelessWidget {
               children: [
                 Container(
                   margin: const EdgeInsets.fromLTRB(1, 0, 1, 2),
-                  padding: const EdgeInsets.fromLTRB(90, 12, 11.03, 37),
+                  padding: const EdgeInsets.fromLTRB(90, 12, 11.03, 65),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: const Color(0xfff5f6fa),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Column(
+                  child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 11.85),
-                        width: 13.94,
-                        height: 12.15,
-                        child: Image.network(
-                          '[Image url]',
-                          width: 13.94,
-                          height: 12.15,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 47.97, 0),
-                        width: 18,
-                        height: 18,
-                        child: Image.network(
-                          '[Image url]',
-                          width: 18,
-                          height: 18,
-                        ),
+                      Placeholder(
+                        fallbackWidth: 13.94,
+                        fallbackHeight: 12.15,
+                        color: Colors
+                            .transparent, // Change this to the desired color
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.fromLTRB(1, 0, 1, 6),
+                  margin: const EdgeInsets.fromLTRB(1, 2, 1, 6),
                   width: double.infinity,
                   height: 24,
                   child: Row(

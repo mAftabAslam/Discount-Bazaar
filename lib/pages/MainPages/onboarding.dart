@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:se_project/Pages/home.dart';
+import 'package:se_project/homePage.dart';
+import 'package:se_project/homePagealt.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({Key? key});
-  
+
 // Google Sign In With Firebase
   Future<void> signInWithGoogle() async {
     // instance of the firebase auth and google signin button
@@ -186,10 +187,8 @@ class Onboarding extends StatelessWidget {
                       await signInWithGoogle();
 
                       // ignore: use_build_context_synchronously
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const HomeScreen()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const Home2()));
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(90.74, 10, 90.5, 10),

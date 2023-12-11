@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:se_project/pages/onboarding.dart';
+import 'package:se_project/pages/MainPages/onboarding.dart';
 //import 'package:se_project/pages/onboarding.dart';
-import 'package:se_project/pages/splash.dart';
+import 'package:se_project/pages/MainPages/splash.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
