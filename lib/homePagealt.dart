@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:se_project/pages/MainPages/account.dart';
 import 'package:se_project/pages/MainPages/chats.dart';
 import 'package:se_project/pages/MainPages/home.dart';
-import 'package:se_project/pages/MainPages/saved.dart';
+import 'package:se_project/pages/MainPages/myAds.dart';
+import 'package:se_project/pages/MainPages/sell.dart';
 
 class Home2 extends StatefulWidget {
-  const Home2({Key? key}) : super(key: key);
+  final String userId;
+
+  const Home2({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<Home2> createState() => _Home2State();
@@ -14,12 +17,18 @@ class Home2 extends StatefulWidget {
 class _Home2State extends State<Home2> {
   int currentTab = 0;
   final PageController _pageController = PageController(initialPage: 0);
-  final List<Widget> screens = const [
-    HomeScreen(),
-    Chats(),
-    Saved(),
-    Account(),
-  ];
+  late List<Widget> screens;
+
+  @override
+  void initState() {
+    super.initState();
+    screens = [
+      HomeScreen(userId: widget.userId),
+      Chats(),
+      MyAds(userId: widget.userId),
+      ProfilePage(),
+    ];
+  }
 
   @override
   void dispose() {
@@ -109,17 +118,23 @@ class _Home2State extends State<Home2> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff1cf396),
+        backgroundColor: const Color(0xff1cf396),
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.black, width: 2.0),
+          side: const BorderSide(color: Colors.black, width: 2.0),
           borderRadius: BorderRadius.circular(30.0),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Color(0xff333333),
           size: 40,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Sell(userId: widget.userId),
+              ));
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

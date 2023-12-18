@@ -2,31 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:se_project/homePage.dart';
 import 'package:se_project/homePagealt.dart';
+import 'package:se_project/pages/Components/snackBar.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({Key? key});
 
 // Google Sign In With Firebase
-  Future<void> signInWithGoogle() async {
-    // instance of the firebase auth and google signin button
+  Future<String?> signInWithGoogle() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
-    //Trigger authentication flow
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    // obtain auth details
     final GoogleSignInAuthentication googleAuth =
         await googleUser!.authentication;
-    // create new credentionals
+
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    // Sign in the user
+
     final UserCredential userCredential =
         await auth.signInWithCredential(credential);
+
+    // Return the user ID or null if the user is not signed in
+    return userCredential.user?.uid;
+  }
+
+  void _showCustomSnackBar(BuildContext context, String message) {
+    CustomSnackBar(
+      message: message,
+    ).show(context);
+   
   }
 
   @override
@@ -183,12 +190,15 @@ class Onboarding extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      // onPressed logic here
-                      await signInWithGoogle();
-
-                      // ignore: use_build_context_synchronously
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const Home2()));
+                      String? userId = await signInWithGoogle();
+                      if (userId != null) {
+                        _showCustomSnackBar(context, 'Logged in Succesfully');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => Home2(userId: userId)),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(90.74, 10, 90.5, 10),
@@ -237,43 +247,40 @@ class Onboarding extends StatelessWidget {
                     child: const Stack(
                       children: [
                         Positioned(
-                          left: 0,
-                          top: 0,
-                          child: Align(
-                            child: SizedBox(
-                              width: 180,
-                              height: 24,
-                              child: Text(
-                                'Don\'t have an account yet?',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.7142857143,
-                                  color: Color(0xff000000),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 23,
+                          left: 1,
                           top: 17,
                           child: Align(
                             child: SizedBox(
-                              width: 125,
+                              width: 180, // Adjust width as needed
                               height: 24,
-                              child: Text(
-                                'Create an account',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.7142857143,
-                                  decoration: TextDecoration.underline,
-                                  color: Color(0xff085938),
-                                  decorationColor: Color(0xff085938),
-                                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Made with ',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.7142857143,
+                                      color: Color(0xff085938),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 18,
+                                    color: Color(0xff1cf396),
+                                  ),
+                                  Text(
+                                    ' by Arsalan',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.7142857143,
+                                      color: Color(0xff085938),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
