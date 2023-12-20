@@ -1,30 +1,103 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:se_project/homePagealt.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // For Firestore
+import 'package:firebase_storage/firebase_storage.dart'; // For Firebase Storage
+import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'dart:io';
 
-import 'package:se_project/pages/Components/snackBar.dart';
+class EditScreen extends StatefulWidget {
+  final DocumentSnapshot ad;
 
-class Sell extends StatefulWidget {
-  final String userId;
-
-  const Sell({Key? key, required this.userId}) : super(key: key);
+  const EditScreen({Key? key, required this.ad}) : super(key: key);
 
   @override
-  State<Sell> createState() => _SellState();
+  _EditScreenState createState() => _EditScreenState();
 }
 
-class _SellState extends State<Sell> {
-  late CollectionReference<Map<String, dynamic>> users =
-      FirebaseFirestore.instance.collection('users');
+class _EditScreenState extends State<EditScreen> {
+  late TextEditingController _nameController;
+  late TextEditingController _priceController;
+  late TextEditingController _descriptionController;
+  String _selectedCategory = '';
+  late ImagePicker _picker; // Declare _picker variable
+  File? _pickedImage; // Declare _pickedImage variable
+  late String _imageUrl; // Declare _imageUrl variable
 
-  final ImagePicker _picker = ImagePicker();
-  File? _pickedImage;
-  late String _imageUrl = ''; // URL of the uploaded image
+  final List<String> categories = [
+    'Jars',
+    'Bottles',
+    'Grains',
+    'Dairy',
+    'Processed Food',
+    'Bulk',
+    'Fruits',
+    'Vegetables',
+  ];
 
-  Future<void> _getImage() async {
+  @override
+  void initState() {
+    super.initState();
+    _picker = ImagePicker();
+    _nameController = TextEditingController(text: widget.ad['name']);
+    _priceController =
+        TextEditingController(text: widget.ad['price'].toString());
+    _descriptionController =
+        TextEditingController(text: widget.ad['description']);
+    _selectedCategory = widget.ad['category'];
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  void _updateAd() async {
+    try {
+      print('Name: ${_nameController.text}');
+      print('Price: ${_priceController.text}');
+      print('Description: ${_descriptionController.text}');
+      print('Category: $_selectedCategory');
+
+      if (_pickedImage != null) {
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('images/${DateTime.now().millisecondsSinceEpoch}');
+        UploadTask uploadTask = storageReference.putFile(_pickedImage!);
+
+        await uploadTask.whenComplete(() async {
+          String downloadURL = await storageReference.getDownloadURL();
+          setState(() {
+            _imageUrl = downloadURL;
+          });
+        }).catchError((onError) {
+          print('Error uploading image: $onError');
+        });
+      }
+
+      // Update Firestore document with new details including image URL if available
+      Map<String, dynamic> updateData = {
+        'name': _nameController.text,
+        'price': double.parse(_priceController.text),
+        'description': _descriptionController.text,
+        'category': _selectedCategory,
+      };
+
+      if (_pickedImage != null) {
+        updateData['imageUrl'] = _imageUrl;
+      }
+
+      await widget.ad.reference.update(updateData);
+
+      Navigator.pop(context); // Go back to the previous screen after update
+    } catch (e) {
+      print('Error updating ad: $e');
+      // Handle error as needed
+    }
+  }
+
+  Future<void> _pickAndUploadImage() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -51,116 +124,12 @@ class _SellState extends State<Sell> {
     }
   }
 
-  void _showCustomSnackBar(BuildContext context, String message) {
-    CustomSnackBar(
-      message: message,
-    ).show(context);
-  }
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _itemNameController = TextEditingController();
-  TextEditingController _itemPriceController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  String? _selectedCategory;
-  String _description = '';
-
-  List<String> _categories = [
-    'Jars',
-    'Bottles',
-    'Grains',
-    'Dairy',
-    'Cans',
-    'Bulk',
-    'Fruits',
-    'Vegetables',
-    'Frozen',
-  ];
-
-  void _submitForm() async {
-    bool showError = true; // Flag to control showing error Snackbars
-
-    if (_imageUrl.isEmpty) {
-      _showCustomSnackBar(context, 'Please add a picture');
-      showError = false;
-    }
-
-    if (_itemNameController.text.isEmpty && showError) {
-      _showCustomSnackBar(context, 'Please enter item name');
-      showError = false;
-    } else if (_itemNameController.text.length > 12 && showError) {
-      _showCustomSnackBar(context, 'Name should not exceed 12 characters');
-      showError = false;
-    }
-
-    if (_imageUrl.isEmpty) {
-      _showCustomSnackBar(context, 'Please add a picture');
-      showError = false;
-    }
-
-    if (_itemNameController.text.isEmpty && showError) {
-      _showCustomSnackBar(context, 'Please enter item name');
-      showError = false;
-    }
-
-    if (_itemPriceController.text.isEmpty &&
-        double.tryParse(_itemPriceController.text) == null &&
-        showError) {
-      _showCustomSnackBar(context, 'Please enter a valid item price');
-      showError = false;
-    }
-
-    if (_selectedCategory == null && showError) {
-      _showCustomSnackBar(context, 'Please select a category');
-      showError = false;
-    }
-
-    if (_description.isEmpty && _description.length < 10 && showError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Description should be at least 10 characters'),
-        ),
-      );
-      showError = false;
-    } else if (showError) {
-      try {
-        // Reference to the user's document using the passed userId
-        DocumentReference userDocRef = users.doc(widget.userId);
-
-        // Add the ad to the 'ads' subcollection under the user's document
-        await userDocRef.collection('ads').add({
-          'name': _itemNameController.text,
-          'price': double.parse(_itemPriceController.text),
-          'category': _selectedCategory,
-          'description': _description,
-          'imageUrl': _imageUrl, // Add the image URL to Firestore
-        });
-
-        print('Item posted to Firestore!');
-        _itemNameController.clear();
-        _itemPriceController.clear();
-        _selectedCategory = null;
-        _descriptionController.clear();
-        _imageUrl = ''; // Reset the image URL after posting
-
-        _showCustomSnackBar(context, 'Add Posted Succesfully');
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Home2(userId: widget.userId),
-            ));
-      } catch (e, stackTrace) {
-        print('Error adding item: $e');
-        print('Stack trace: $stackTrace');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Your Ads',
+          'Edit Ad',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -170,8 +139,7 @@ class _SellState extends State<Sell> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(
-          color:
-              Colors.black, // Change this color to make the back button visible
+          color: Colors.black,
         ),
       ),
       backgroundColor: Colors.white,
@@ -184,7 +152,7 @@ class _SellState extends State<Sell> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: _getImage,
+                  onTap: _pickAndUploadImage,
                   child: Container(
                     margin: EdgeInsets.only(bottom: 25),
                     width: double.infinity,
@@ -195,7 +163,7 @@ class _SellState extends State<Sell> {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0x0f101828),
+                          color: Color(0x0f101728),
                           offset: Offset(0, 2),
                           blurRadius: 2,
                         ),
@@ -208,51 +176,11 @@ class _SellState extends State<Sell> {
                     ),
                     child: _pickedImage != null
                         ? Image.file(_pickedImage!, fit: BoxFit.cover)
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 12),
-                                  width: 40,
-                                  height: 40,
-                                  child: Image.asset(
-                                    'lib/assets/upload.png',
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Tap to upload',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xff085938),
-                                      ),
-                                    ),
-                                    Text(
-                                      ' from your gallery',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color(0xff667084),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                        : Image.network(widget.ad['imageUrl'],
+                            fit: BoxFit.cover),
                   ),
                 ),
-
                 SizedBox(height: 5),
-
-                // Name Input Field
                 Container(
                   width: double.infinity,
                   height: 70,
@@ -284,7 +212,7 @@ class _SellState extends State<Sell> {
                           ],
                         ),
                         child: TextFormField(
-                          controller: _itemNameController,
+                          controller: _nameController,
                           decoration: InputDecoration(
                             hintText: 'Enter your item name',
                             hintStyle: TextStyle(
@@ -299,10 +227,8 @@ class _SellState extends State<Sell> {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 15),
-
-                // Item Price Input Field
+                // ... (similar styling for other fields)
                 Container(
                   width: double.infinity,
                   height: 70,
@@ -310,7 +236,7 @@ class _SellState extends State<Sell> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Item Price',
+                        'Price',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -334,32 +260,24 @@ class _SellState extends State<Sell> {
                           ],
                         ),
                         child: TextFormField(
-                          controller: _itemPriceController,
+                          controller: _priceController,
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
                           decoration: InputDecoration(
+                            hintText: 'Enter the price',
                             hintStyle: TextStyle(
                               color: Color(0xffa9a9a9),
-                            ),
-                            prefix: Text(
-                              'Rs ',
-                              style: TextStyle(
-                                color: Color(0xff344053),
-                              ),
                             ),
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 14),
                             border: InputBorder.none,
                           ),
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
                         ),
                       ),
                     ],
                   ),
                 ),
-
                 SizedBox(height: 15),
-
-                // Category Dropdown
                 Container(
                   width: double.infinity,
                   height: 70,
@@ -378,7 +296,6 @@ class _SellState extends State<Sell> {
                       Container(
                         width: double.infinity,
                         height: 44,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Color(0xffcfd4dc)),
@@ -393,36 +310,31 @@ class _SellState extends State<Sell> {
                         ),
                         child: DropdownButtonFormField<String>(
                           value: _selectedCategory,
-                          items: _categories.map((String category) {
-                            return DropdownMenuItem(
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedCategory = newValue!;
+                            });
+                          },
+                          items: categories.map((category) {
+                            return DropdownMenuItem<String>(
                               value: category,
                               child: Text(category),
                             );
                           }).toList(),
                           decoration: InputDecoration(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 14),
                             border: InputBorder.none,
-                            hintText: 'Select Category',
-                            hintStyle: TextStyle(
-                              color: Color(0xffa9a9a9),
-                            ),
                           ),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _selectedCategory = value;
-                            });
-                          },
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 15),
-
-                // Description Input Field
                 Container(
                   width: double.infinity,
-                  height: 140,
+                  height: 150, // Adjust height as needed
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -437,7 +349,7 @@ class _SellState extends State<Sell> {
                       SizedBox(height: 6),
                       Container(
                         width: double.infinity,
-                        height: 108,
+                        height: 100, // Adjust height as needed
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Color(0xffcfd4dc)),
@@ -452,32 +364,26 @@ class _SellState extends State<Sell> {
                         ),
                         child: TextFormField(
                           controller: _descriptionController,
+                          maxLines:
+                              null, // Allow multiple lines for description
+                          keyboardType: TextInputType.multiline,
                           decoration: InputDecoration(
-                            hintText: 'Enter your description',
+                            hintText: 'Enter the description',
                             hintStyle: TextStyle(
                               color: Color(0xffa9a9a9),
                             ),
-                            border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 10),
+                            border: InputBorder.none,
                           ),
-                          maxLines: 3,
-                          onChanged: (value) {
-                            setState(() {
-                              _description = value;
-                            });
-                          },
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 15),
-
-                // Post Ad Button
                 ElevatedButton(
-                  onPressed: _submitForm,
+                  onPressed: _updateAd,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
@@ -492,7 +398,7 @@ class _SellState extends State<Sell> {
                     height: 44,
                     child: Center(
                       child: Text(
-                        'Post Ad',
+                        'Update',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -502,7 +408,6 @@ class _SellState extends State<Sell> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 20),
               ],
             ),

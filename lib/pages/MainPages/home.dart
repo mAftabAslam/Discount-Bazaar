@@ -25,7 +25,8 @@ class HomeScreen extends StatelessWidget {
             _buildHeader(context),
             CustomSearchBar(),
             BannerSlider(),
-            CategorySection(categories: ['Jars', 'Grains', 'Dairy', 'Bottle']),
+            const CategorySection(
+                categories: ['Jars', 'Grains', 'Dairy', 'Bottles']),
             _buildTrendingSection(context),
             HorizontalCardList(),
 

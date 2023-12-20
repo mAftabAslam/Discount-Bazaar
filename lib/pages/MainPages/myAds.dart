@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:se_project/pages/MainPages/edit.dart';
 
 class MyAds extends StatelessWidget {
   final String userId;
@@ -10,7 +11,20 @@ class MyAds extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Ads')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Your Ads',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Color(0xff101728),
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: _buildAdsList(),
     );
   }
@@ -51,26 +65,130 @@ class MyAds extends StatelessWidget {
       return await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Confirm Delete'),
-            content: Text('Are you sure you want to delete this ad?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dismiss the dialog
-                },
-                child: Text('Cancel'),
+          return Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Color(0xffffffff),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x07101828),
+                    offset: Offset(0, 8),
+                    blurRadius: 4,
+                  ),
+                  BoxShadow(
+                    color: Color(0x14101828),
+                    offset: Offset(0, 20),
+                    blurRadius: 12,
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.of(context).pop(); // Dismiss the dialog
-                  await _deleteAd(ad); // Call delete method
-                },
-                child: Text('Delete'),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Content: Title and Message
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        width: 48,
+                        height: 48,
+                        child: Icon(
+                          Icons.delete,
+                          size: 48,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Text(
+                        'Confirm Delete',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff101728),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Are you sure you want to delete this ad?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff667084),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24), // Adjusted space
+                  // Actions: Delete and Cancel Buttons
+                  SizedBox(
+                    height: 44,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        await _deleteAd(ad);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Delete',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 12), // Adjusted space
+                  SizedBox(
+                    height: 44,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Color(0xffcfd4dc)),
+                        backgroundColor: Color(0xffffffff),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff344053),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         },
+      );
+    }
+
+    void _editAd(DocumentSnapshot ad) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EditScreen(ad: ad),
+        ),
       );
     }
 
@@ -89,6 +207,12 @@ class MyAds extends StatelessWidget {
                   ad['name'],
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
+                SizedBox(height: 8.0),
+                Text(
+                  '${ad['category']}',
+                  style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                ),
+                SizedBox(height: 8.0),
                 Text(
                   'Rs ${ad['price']}',
                   style: TextStyle(color: Colors.green, fontSize: 16.0),
@@ -96,10 +220,37 @@ class MyAds extends StatelessWidget {
                 SizedBox(height: 8.0),
                 Text(ad['description']),
                 SizedBox(height: 8.0),
-                ElevatedButton(
-                  onPressed: () =>
-                      _confirmDelete(context), // Confirm before delete
-                  child: Text('Delete'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _editAd(ad),
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(color: Color(0xff085938)),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Color(0xffD4FAE1)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10), // Adding space between buttons
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _confirmDelete(context),
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Color(0xff1CF396)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -110,14 +261,32 @@ class MyAds extends StatelessWidget {
   }
 
   Widget _buildAdImage(String imageUrl) {
-    return AspectRatio(
-      aspectRatio: 16 / 9, // Adjust the aspect ratio as needed
-      child: imageUrl.isNotEmpty
-          ? Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-            )
-          : Container(color: Colors.grey[300]),
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+          10, 10, 10, 0), // Padding top: 10, left: 10, right: 10
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10), // Adding border radius
+        // Setting a default color for the container
+      ),
+      child: AspectRatio(
+        aspectRatio: 16 / 9, // Adjust the aspect ratio as needed
+        child: ClipRRect(
+          borderRadius:
+              BorderRadius.circular(10), // Applying border radius to the image
+          child: imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                )
+              : Center(
+                  child: Icon(
+                    Icons.image,
+                    size: 40,
+                    color: Colors.grey,
+                  ),
+                ),
+        ),
+      ),
     );
   }
 

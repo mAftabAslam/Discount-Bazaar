@@ -1,44 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:se_project/pages/MainPages/product.dart';
 
 class HorizontalCardList extends StatelessWidget {
-  const HorizontalCardList({super.key});
+  const HorizontalCardList({Key? key});
+  Future<User?> getCurrentUser() async {
+    return FirebaseAuth.instance.currentUser;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collectionGroup('ads') // Fetch ads from all users
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+    return FutureBuilder<User?>(
+      future: getCurrentUser(),
+      builder: (context, userSnapshot) {
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (userSnapshot.hasError) {
+          return Text('Error: ${userSnapshot.error}');
         } else {
-          List<DocumentSnapshot> data = snapshot.data!.docs.toList();
-          return SizedBox(
-            height: 220,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(data.length, (index) {
-                  var item = data[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: buildCard(item, context),
-                  );
-                }),
-              ),
-            ),
+          User? currentUser = userSnapshot.data;
+
+          return StreamBuilder<QuerySnapshot>(
+            stream:
+                FirebaseFirestore.instance.collectionGroup('ads').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                List<DocumentSnapshot> data = snapshot.data!.docs.toList();
+                return SizedBox(
+                  height: 220,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(data.length, (index) {
+                        var item = data[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: buildCard(item, context, currentUser),
+                        );
+                      }),
+                    ),
+                  ),
+                );
+              }
+            },
           );
         }
       },
     );
   }
 
-  Widget buildCard(DocumentSnapshot item, BuildContext context) {
+  Widget buildCard(
+      DocumentSnapshot item, BuildContext context, User? currentUser) {
+    String userDisplayName = currentUser?.displayName ?? 'Default Name';
+    DateTime userCreationDate =
+        currentUser?.metadata.creationTime ?? DateTime.now();
+    String userMemberSince =
+        '${userCreationDate.day}/${userCreationDate.month}/${userCreationDate.year}';
     return Container(
       width: 177,
       height: 210,
@@ -130,7 +152,15 @@ class HorizontalCardList extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Product(),
+                      builder: (context) => ProductDetails(
+                        imageUrl: item['imageUrl'],
+                        name: item['name'],
+                        price: item['price'],
+                        category: item['category'],
+                        description: item['description'],
+                        userDisplayName: userDisplayName,
+                        userMemberSince: userMemberSince,
+                      ),
                     ));
                 // Add your onTap functionality here
               },
